@@ -1,9 +1,18 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/UserContext';
 
 const Register = () => {
-  const { createUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { createUser, signInWithGoogle } = useContext(AuthContext);
+  const handleGoogleSingIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => console.error(error));
+  };
   console.log(createUser);
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -14,7 +23,8 @@ const Register = () => {
     createUser(email, password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+        form.reset();
+        navigate('/');
       })
       .catch((error) => {
         console.error(error);
@@ -76,6 +86,12 @@ const Register = () => {
                 <button className='btn btn-primary'>Login</button>
               </div>
             </form>
+            <button
+              onClick={handleGoogleSingIn}
+              className='btn btn-outline btn-success'
+            >
+              SingIn with Google.
+            </button>
           </div>
         </div>
       </div>
